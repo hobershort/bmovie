@@ -51,29 +51,29 @@ def generate()
 	title = "The "
 
 	if(0.5 < rand)
-		title = $intros.choice + " " + title
+		title = $intros.sample + " " + title
 	end
 
 	if(0.25 < rand)
-		title += $adjectives.choice + " "
+		title += $adjectives.sample + " "
 	end
 
 	if(0.25 < rand)
-		title += $adjectives.choice + " "
+		title += $adjectives.sample + " "
 	end
 
 	if(0.5 < rand)
-		title += $modifiers.choice 
+		title += $modifiers.sample 
 	end
 
-	title += $creatures.choice
+	title += $creatures.sample
 
 	if(0.5 < rand)
-		title += " From " + $places.choice 
+		title += " From " + $places.sample 
 	end
 
 	if(0.5 < rand)
-		title += $tags.choice
+		title += $tags.sample
 	end
 
 	return title
