@@ -1,9 +1,10 @@
 require 'net/http'
 require 'uri'
+require 'rubygems'
 require 'sinatra'
 
-fullsrc = Net::HTTP.get(URI.parse("http://www.gandronics.com/bmovie_dump.php"))
-#fullsrc = File.read("bmovie_dump.php")
+#fullsrc = Net::HTTP.get(URI.parse("http://www.gandronics.com/bmovie_dump.php"))
+fullsrc = File.read("bmovie_dump.php")
 lines = fullsrc.split(/<[^>]*>/)
 lines = lines.select{|item| item =~ /\w*: .*/}
 
