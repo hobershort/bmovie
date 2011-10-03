@@ -1,2 +1,2 @@
-require 'bmovie'
+require './bmovie'
 run Sinatra::Application
