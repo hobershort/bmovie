@@ -1,15 +1,20 @@
+#Import all the packages required for magic
 require 'rubygems'
 require 'sinatra'
 require 'net/http'
 require 'uri'
 
+#Do this stuff when we start up in production (i.e. not every time a request comes in)
 configure :production do
-	#fullsrc = File.read("bmovie_dump.php")
+
+	#Fetch the original BMTG's database dump	
 	fullsrc = Net::HTTP.get(URI.parse("http://www.gandronics.com/bmovie_dump.php"))
+	#Split the file in to an array of lines, using HTMl tags as line boundaries
 	lines = fullsrc.split(/<[^>]*>/)
+	#Pick only the lines of the format "text: more text"
 	lines = lines.select{|item| item =~ /\w*: .*/}
 
-	item = lines.pop
+	#dimension our arrays
 	$intros = []
 	$adjectives = [] 
 	$modifiers = [] 
@@ -17,7 +22,11 @@ configure :production do
 	$places = []
 	$tags = []
 
+	#For each line in the file
 	lines.each do |item|
+		#Based on the first letter of the line, figure out whether it's an 
+		#intro, adjective, modifier, creature, place, or tag and push it on to 
+		#the appropriate array using a regex to extract the rest of the line
 		case item[0,1]
 		when 'i'
 			m = item.match /intro: (.*)/
@@ -45,40 +54,53 @@ configure :production do
 	end
 end
 
-
+#This method will get called each time we get a request, and returns a title
 def generate()
 
 	title = "The "
 
+	#50/50 change to pick a random intro and stick it in front of the title
 	if(0.5 < rand)
-		title = $intros.sample + " " + title
+		title = $intros.choice + " " + title
+	end
+
+	#One in four chance to pick a random adjective 
+	if(0.25 < rand)
+		title += $adjectives.choice + " "
 	end
 
 	if(0.25 < rand)
-		title += $adjectives.sample + " "
-	end
-
-	if(0.25 < rand)
-		title += $adjectives.sample + " "
+		title += $adjectives.choice + " "
 	end
 
 	if(0.5 < rand)
-		title += $modifiers.sample 
+		title += $modifiers.choice 
 	end
 
-	title += $creatures.sample
+	#We always have a creature
+	title += $creatures.choice
 
 	if(0.5 < rand)
-		title += " From " + $places.sample 
+		title += " From " + $places.choice 
 	end
 
 	if(0.5 < rand)
-		title += $tags.sample
+		title += $tags.choice
 	end
 
+	#Return our assembled title
 	return title
 end
 
+
+#This is where the magic of Sinatra, the framework, happens
+#When someone makes a request to the page, generate a title, and then render
+#the page template (views/bmovie.erb), and substitute the generated title in to 
+#the template
 get '/' do
 	erb :bmovie, :locals => {:title => generate()}
+end
+
+get '/dump' do
+	intros.each { |item| puts "intro: #{item}" }
 end
