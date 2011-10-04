@@ -129,6 +129,7 @@ class Generator
 	end
 
 	def update_file
+		return #we can't do shit if we can't write to this file
 		@file_lock.synchronize {
 			outf = File.new(LOCAL_FILENAME, "w")
 			@added_words.each do |type, items|
