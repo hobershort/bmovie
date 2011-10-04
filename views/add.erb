@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<title>Add a new word</title>
+		
+		<script type="text/javascript" 
+			src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"> </script>
+		<script type="text/javascript">
+			function addIt()
+			{
+				var type = $("#type").val();
+				var word = $("#word").val();
+
+				window.location = "/add/" + type + "/" + word;
+			}
+		</script>
+	<head>
+
+	<body>
+		<center>
+			<p>Add a word</p>
+
+			<% if ((locals.has_key? :success) and (success == true)) %>
+				<p style="color: #4D4">Word added</p>
+			<% end %>
+			<% if locals.has_key? :message %>
+				<p style="color:#F33"><%=message%></p>
+			<% end %>
+			<form>
+				<p>
+					<input type="text" name="word" id="word"/> &nbsp;
+					<select id="type">
+						<option value="intro">intro</option>
+						<option value="adjective">adjective</option>
+						<option value="modifier">modifier</option>
+						<option value="creature">creature</option>
+						<option value="place">place</option>
+						<option value="tag">tag</option>
+					</select>
+				</p>
+				<p>
+					<input type="button" value="Add it" onClick="addIt()"/>
+				</p>
+			</form>
+		</center>
+	</body>
+
+</html>
