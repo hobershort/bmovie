@@ -102,5 +102,13 @@ get '/' do
 end
 
 get '/dump' do
-	intros.each { |item| puts "intro: #{item}" }
+	dump = ""
+	$intros.each { |i| dump += "intro: #{i}<br/>\n" }
+	$adjectives.each { |i| dump += "adjective: #{i}<br/>\n" }
+	$modifiers.each { |i| dump += "modifier: #{i}<br/>\n" }
+	$creatures.each { |i| dump += "creature: #{i}<br/>\n" }
+	$places.each { |i| dump += "place: #{i}<br/>\n" }
+	$tags.each { |i| dump += "tag: #{i}<br/>\n" }
+
+	return dump
 end
