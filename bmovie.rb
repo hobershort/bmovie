@@ -3,6 +3,11 @@ require 'rubygems'
 require 'sinatra'
 require './generator'
 
+helpers do
+	include Rack::Utils
+	alias_method :h, :escape_html
+end
+
 gen = ""
 
 #Do this stuff when we start up in production (i.e. not every time a request comes in)
@@ -27,6 +32,7 @@ get '/add' do
 end
 
 get '/add/*/*' do |type,word|
+	word = h word
 	message = gen.add(type, word)
 	erb :add, :locals => {:success => (message == nil), :message => message}
 end
