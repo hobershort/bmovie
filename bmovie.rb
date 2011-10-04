@@ -36,3 +36,11 @@ get '/add/*/*' do |type,word|
 	message = gen.add(type, word)
 	erb :add, :locals => {:success => (message == nil), :message => message}
 end
+
+get '/delete' do
+	erb :delete, :locals => {:words => gen.get_added_words}
+end
+
+delete '/*/*' do |type,word|
+	gen.delete(type, word)
+end

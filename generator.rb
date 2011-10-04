@@ -1,7 +1,10 @@
 require 'net/http'
 require 'uri'
+require 'thread'
 
 class Generator
+
+	LOCAL_FILENAME = "added_words.txt"
 	def initialize()
 		#Fetch the original BMTG's database dump	
 		fullsrc = Net::HTTP.get(URI.parse("http://www.gandronics.com/bmovie_dump.php"))
@@ -18,6 +21,16 @@ class Generator
 		@words[:creature] = []
 		@words[:place] = []
 		@words[:tag] = []
+		
+		@added_words = {}
+		@added_words[:intro] = []
+		@added_words[:adjective] = [] 
+		@added_words[:modifier] = [] 
+		@added_words[:creature] = []
+		@added_words[:place] = []
+		@added_words[:tag] = []
+
+		@file_lock = Mutex.new
 
 		#For each line in the file
 		lines.each do |item|
@@ -48,6 +61,14 @@ class Generator
 					puts "Line not matched: " + item
 				end
 			end
+		end
+
+		File.open(LOCAL_FILENAME, "r").each do |line|
+			m = line.match /(\w*): (.*)/
+			type = m[1].to_sym
+			word = m[2]
+			@words[type] << word
+			@added_words[type] << word
 		end
 	end
 	
@@ -101,6 +122,19 @@ class Generator
 		return dump
 	end
 
+	def update_file
+		@file_lock.synchronize {
+			outf = File.new(LOCAL_FILENAME, "w")
+			@added_words.each do |type, items|
+				items.each do |item|
+					outf.write("#{type.to_s}: #{item}\n")
+				end
+			end
+
+			outf.close()
+		}
+	end
+
 	def add(type, word)
 		type = type.to_sym
 
@@ -113,11 +147,26 @@ class Generator
 				return "That word is already in the database."
 			else
 				@words[type] << word
+				@added_words[type] << word
+				update_file()
 			end
 		else
 			return "That's not a type of word I recognize."
 		end
 		
 		return nil
+	end
+
+	def delete(type, word)
+		type = type.to_sym
+		if(@added_words.has_key? type) #make sure we weren't passed a bogus type
+			if( @added_words[type].delete(word) != nil ) #the word was previously in the array
+				update_file()
+			end
+		end
+	end
+
+	def get_added_words
+		return @added_words
 	end
 end

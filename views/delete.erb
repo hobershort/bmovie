@@ -1,0 +1,41 @@
+<html>
+	<head>
+		<title>Delete a word that's been added</title>
+		
+		<script type="text/javascript" 
+			src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"> </script>
+		<script type="text/javascript">
+			function deleteIt()
+			{
+				var type = $("#type").val();
+				var word = $("#word").val();
+
+				window.location = "/add/" + type + "/" + word;
+			}
+		</script>
+	<head>
+
+	<body>
+		<center>
+			<h3>Delete an added word</h3>
+		</center>
+
+	<% words.each do |type, items| 
+		items.each do |item| %>
+		<div>
+		<input type="button" value="delete" onClick="
+			$.ajax({
+			type: 'DELETE',
+			url: '/<%=type.to_s%>/<%=item%>'
+			});
+
+			$(this).parents('div').slideUp('fast', function(){ $(this).remove();});
+		" />
+		<%=type.to_s%>: 
+		<%=item%> 
+		</div>
+		<% end %>
+	<% end %>
+	</body>
+
+</html>
