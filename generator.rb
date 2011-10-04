@@ -63,12 +63,16 @@ class Generator
 			end
 		end
 
-		File.open(LOCAL_FILENAME, "r").each do |line|
-			m = line.match /(\w*): (.*)/
-			type = m[1].to_sym
-			word = m[2]
-			@words[type] << word
-			@added_words[type] << word
+		#Read in our file of existing words 
+		begin
+			File.open(LOCAL_FILENAME, "r").each do |line|
+				m = line.match /(\w*): (.*)/
+				type = m[1].to_sym
+				word = m[2]
+				@words[type] << word
+				@added_words[type] << word
+			end
+		rescue SystemCallError #if the file doesn't exist
 		end
 	end
 	
