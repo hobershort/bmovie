@@ -1,16 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <html>
 	<head>
 		<title>B-movie title generator</title>
+		<style type="text/css">
+
+		body {
+			width: 100%;
+		}
+
+		div {
+			text-align: center;
+			margin-bottom: 1em;
+
+		}
+
+		#title {
+			font-size: x-large;
+		}
+
+		</style>
 	</head>
 	<body>
-		<center>
-			<p>Coming Soon To A Theater Near You:</p>
-			<font size=+2>
-				<p><%=title%></p>
-			</font>
+		<div id="coming-soon">Coming Soon To A Theater Near You:</div>
+		<div id="title">
+				<%=title%>
+		</div>
+		<div id="button">
 			<form>
 				<input type='button' value='Another' onClick='window.location.reload()' />
 			</form>
-		</center>
+		</div>
 	</body>
 </html>
