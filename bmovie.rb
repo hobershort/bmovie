@@ -1,7 +1,10 @@
 #Import all the packages required for magic
 require 'rubygems'
 require 'sinatra'
+require 'data_mapper'
 require './generator'
+require './best'
+
 
 helpers do
 	include Rack::Utils
@@ -10,9 +13,19 @@ end
 
 gen = ""
 
-#Do this stuff when we start up in production (i.e. not every time a request comes in)
+
 configure :production do
+	DataMapper.setup(:default, ENV['DATABASE_URL'] || 'postgres://localhost/mydb')
+end
+
+configure :development do
+	DataMapper.setup(:default, "sqlite3:database.db")
+end
+
+#Do this stuff when we start up in production (i.e. not every time a request comes in)
+configure :production, :development do
 	gen = Generator.new()
+	DataMapper.auto_migrate!
 end
 
 #This is where the magic of Sinatra, the framework, happens
@@ -39,6 +52,23 @@ end
 
 get '/delete' do
 	erb :delete, :locals => {:words => gen.get_added_words}
+end
+
+post '/new-best' do
+	if(params[:title])
+		best = Best.new
+		best.title = params[:title]
+		best.save
+		puts best
+		return "Added" 
+	else
+		return "Error: title submitted to server is null!"
+	end
+end
+
+get '/best-of' do
+	puts Best.all 
+	erb :best, :locals => {:best => Best.all()}
 end
 
 delete '/*/*' do |type,word|

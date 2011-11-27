@@ -2,6 +2,16 @@
 
 <html>
 	<head>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+		<script type="text/javascript">
+			function add_best_of() {
+				var title = $("div#title").text().trim();
+				$.post('/new-best', {title: title}, function(message) {
+					$("a#click-here").replaceWith(message);
+				} );
+
+			}
+		</script>
 		<title>B-movie title generator</title>
 		<meta name="viewport" content="width=400;" />
 		<style type="text/css">
@@ -31,6 +41,11 @@
 			<form>
 				<input type='button' value='Another' onClick='window.location.reload()' />
 			</form>
+		</div>
+
+		<div id="best-of">
+			<a href="#" onclick="add_best_of()" id="click-here">Click here</a> 
+			to add to the <a href="/best-of">"Best Of"</a> list
 		</div>
 	</body>
 </html>

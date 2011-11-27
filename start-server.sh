@@ -1,1 +1,1 @@
-thin -e production -R config.ru start
+thin -e development -R config.ru start
